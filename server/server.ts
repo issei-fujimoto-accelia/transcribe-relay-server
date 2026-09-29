@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 const WSS_PORT = Number(process.env.WSS_PORT) || 3000;
 const WHISPER_API_URL = process.env.WHISPER_API_URL || 'http://localhost:8080/inference';
 const OLLAMA_API_URL = process.env.OLLAMA_API_URL || 'http://localhost:11434/api/generate';
-const TRANSLATION_MODEL = process.env.TRANSLATION_MODEL || 'qwen2.5:0.5b';
+const TRANSLATION_MODEL = process.env.TRANSLATION_MODEL || 'qwen3.5:0.8b-mlx';
 
 console.log(`[Config] Whisper URL : ${WHISPER_API_URL}`);
 console.log(`[Config] Ollama URL  : ${OLLAMA_API_URL}`);
@@ -34,7 +34,13 @@ function createWavBuffer(pcmData: Buffer, sampleRate = 16000): Buffer {
 
 // Ollama による英日翻訳
 async function translateEnToJa(text: string): Promise<string> {
-  const prompt = `Translate the following English speech subtitle into natural Japanese. Output ONLY the Japanese translation without quotes, notes, or explanations.\n\nEnglish: ${text}\nJapanese:`;
+  const prompt = `以下の英語を自然な日本語に翻訳してください。
+  文章は、プログラミングに関するものです。import や package などの専門用語・技術キーワードは訳さずそのまま残してください。
+  また、英語を文字起こししたものです。一部、不自然な単語や切り取られた表現である可能性があるため考慮してください。
+  解説や注釈は含めず、翻訳結果の日本語のみを出力してください。
+
+  英語: ${text}
+  日本語:`;
 
   try {
     const res = await fetch(OLLAMA_API_URL, {
@@ -44,6 +50,7 @@ async function translateEnToJa(text: string): Promise<string> {
         model: TRANSLATION_MODEL,
         prompt: prompt,
         stream: false,
+        think: false,
         options: {
           temperature: 0.1, // 翻訳のブレ・余計な出力を抑制
           num_predict: 128
@@ -55,7 +62,6 @@ async function translateEnToJa(text: string): Promise<string> {
       console.error(`Ollama error HTTP ${res.status}`);
       return '';
     }
-
     const data = await res.json() as { response: string };
     return data.response.trim();
   } catch (err) {

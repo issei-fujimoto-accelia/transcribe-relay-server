@@ -11,6 +11,21 @@ WHISPER_BIN=${WHISPER_DIR}/build/bin/whisper-server
 WHISPER_MODEL=${WHISPER_DIR}/models/ggml-base.en.bin
 SERVER_DIR="$PROJECT_ROOT/server"
 
+# 第1引数に設定ファイルパスが指定されていれば優先、なければ local_mac.env を使用
+CONFIG_FILE="${1:-$PROJECT_ROOT/local_mac.env}"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo -e "\033[31m✘ Error: Config file not found at $CONFIG_FILE\033[0m"
+  echo "Usage: ./start-remote.sh [path/to/custom.env]"
+  exit 1
+fi
+
+echo -e "\033[36m▶ Loading configuration from: $CONFIG_FILE\033[0m"
+# 設定変数を読み込み＆環境変数としてエクスポート
+set -a
+source "$CONFIG_FILE"
+set +a
+
 # 終了時のクリーンアップ処理（バックグラウンドプロセスを確実にKILL）
 cleanup() {
   echo -e "\n\033[1;33m[Shutting down all services...]\033[0m"

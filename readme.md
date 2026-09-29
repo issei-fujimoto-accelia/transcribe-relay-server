@@ -30,6 +30,9 @@ ${script_dir}/build/bin/whisper-server -m models/ggml-base.en.bin --port 8080 --
 ``` shell
 brew install ollama
 
+ollama pull qwen3.5:0.8b
+ollama pull qwen3.5:0.8b-mlx // macのユニファイドメモリ使える人
+
 // ollama run qwen2.5:1.5b // 後からサーバーはまとめて起動するのでここで起動する必要はない
 // ollama run qwen2.5:0.5b // 後からサーバーはまとめて起動するのでここで起動する必要はない
 ```
@@ -60,9 +63,21 @@ sh start.sh
 ターミナルおよび拡張機能のポップアップ内に文字起こし結果が逐次出力されます。
 
 
+## remote
+
+``` shell
+bash ./models/download-ggml-model.sh medium.en
+./whisper-server --host 0.0.0.0 --port 8080 ...
+```
+
+``` shell
+ollama pull qwen3.5:2b
+ollama pull qwen3.5:4b
+
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
+```
+
 ## メモ
 
 ``` shell
-OLLAMA_HOST=0.0.0.0:11434 ollama serve
-./whisper-server --host 0.0.0.0 --port 8080 ...
 ```
