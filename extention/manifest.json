@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Audio Transcriber Panel",
+  "version": "1.0",
+  "description": "ブラウザ音声をリアルタイム文字起こしする独立字幕ウィンドウ",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {},
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pcm-processor.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
