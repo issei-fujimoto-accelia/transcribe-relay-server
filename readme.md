@@ -57,6 +57,9 @@ Chromeで chrome://extensions/ を開く。
 sh start.sh
 ```
 
+`local_mac.env`が読み込まれるので、モデルなどを変更したい場合はここを修正
+
+
 ### 文字起こしの開始
 ブラウザで英語音声が流れるタブ（YouTube等）を開く。
 拡張機能のアイコンをクリックし、「Start Capture」を押す。
@@ -64,6 +67,9 @@ sh start.sh
 
 
 ## remote
+GPUサーバー側でollamaとwhiperを動かすパターン
+
+### GPUサーバー側で以下を設定
 
 ``` shell
 bash ./models/download-ggml-model.sh medium.en
@@ -77,7 +83,10 @@ ollama pull qwen3.5:4b
 OLLAMA_HOST=0.0.0.0:11434 ollama serve
 ```
 
-## メモ
+### ローカル側では以下を起動
 
 ``` shell
+sh start-remote.sh
 ```
+
+`remote.env`が読み込まれるので、モデルなどを変更したい場合はここを修正
